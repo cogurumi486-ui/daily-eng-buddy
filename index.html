@@ -1,213 +1,189 @@
 <!DOCTYPE html>
-
 <html lang="ko">
-
 <head>
-
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-
-<title>단이의 곱셈 모험</title>
+<title>단이의 곱셈 모험!</title>
 
 <style>
 
 @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
 
 * {
-
     box-sizing: border-box;
-
     -webkit-tap-highlight-color: transparent;
+}
 
+html {
+    min-height: 100%;
 }
 
 body {
-
     margin: 0;
-
-    background: #dff4df;
-
+    min-height: 100dvh;
+    background: #dff3df;
     font-family: 'Jua', sans-serif;
-
-    color: #5b3a2d;
-
+    color: #5b382c;
     user-select: none;
-
+    overflow-x: hidden;
 }
 
+/* 전체 게임 */
+
 .game {
-
     width: 100%;
-
     max-width: 760px;
-
-    min-height: 100vh;
-
+    min-height: 100dvh;
     margin: auto;
-
-    padding: 14px;
-
+    padding: 12px 14px 22px;
+    position: relative;
     overflow: hidden;
 
-    position: relative;
-
     background:
-
-        radial-gradient(circle at 10% 20%, #ffffff 0 35px, transparent 36px),
-
-        radial-gradient(circle at 88% 17%, #ffffff 0 30px, transparent 31px),
-
         linear-gradient(
-
             to bottom,
-
-            #bcecf7 0%,
-
-            #d9f4d0 43%,
-
-            #b8df91 100%
-
+            #bdebf6 0%,
+            #d9f3d0 43%,
+            #b6dd8e 100%
         );
-
 }
 
 /* 구름 */
 
 .cloud {
-
     position: absolute;
-
-    font-size: 48px;
-
+    font-size: 42px;
     opacity: .8;
-
-    animation: cloudMove 5s infinite alternate ease-in-out;
-
+    pointer-events: none;
+    animation: cloudMove 5s ease-in-out infinite alternate;
 }
 
 .cloud1 {
-
-    left: 15px;
-
-    top: 85px;
-
+    left: 10px;
+    top: 90px;
 }
 
 .cloud2 {
-
-    right: 20px;
-
-    top: 150px;
-
-    font-size: 40px;
-
+    right: 5px;
+    top: 145px;
 }
 
 @keyframes cloudMove {
 
-    from { transform: translateY(0); }
+    from {
+        transform: translateY(0);
+    }
 
-    to { transform: translateY(-8px); }
-
+    to {
+        transform: translateY(-8px);
+    }
 }
 
-/* 상단 */
+/* 상단 정보 */
 
 .top {
+    position: relative;
+    z-index: 5;
 
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
 
-    position: relative;
-
-    z-index: 3;
-
+    margin-bottom: 10px;
 }
 
 .level-box,
-
 .score-box {
 
     background: #fffaf0;
 
     border: 3px solid #e8c99f;
 
-    border-radius: 24px;
+    border-radius: 22px;
 
-    padding: 9px 15px;
+    box-shadow: 0 5px 0 #d5b789;
 
-    box-shadow: 0 5px 0 #d4b486;
-
+    padding: 7px 13px;
 }
 
 .level-box {
-
-    font-size: 22px;
-
+    font-size: 20px;
+    line-height: 1.05;
 }
 
 .level-small {
-
-    font-size: 15px;
-
+    font-size: 14px;
 }
 
 .score-box {
-
     display: flex;
-
-    gap: 15px;
-
-    font-size: 20px;
-
+    gap: 12px;
+    font-size: 18px;
 }
 
-.score-box span {
-
-    color: #d97835;
-
+.score-number {
+    color: #d77b35;
 }
 
-/* 제목 */
+/* =========================
+   제목 배너
+========================= */
 
-.title {
+.title-banner {
 
     position: relative;
+    z-index: 4;
 
-    z-index: 2;
+    width: 92%;
+
+    margin: 7px auto 12px;
+
+    padding: 13px 10px 11px;
 
     text-align: center;
 
-    margin: 18px auto 15px;
+    background: #fff0d9;
 
-    width: fit-content;
+    border: 4px solid #c98a5a;
 
-    max-width: 95%;
+    border-radius: 25px;
 
-    background: #fff1dc;
+    box-shadow:
+        0 7px 0 #b66e47,
+        0 0 0 3px #fff7e9;
+}
 
-    border: 4px solid #c88758;
+.title-banner::before,
+.title-banner::after {
 
-    border-radius: 28px;
+    content: "🐾";
 
-    padding: 10px 25px;
+    position: absolute;
 
-    box-shadow: 0 7px 0 #b56d45;
+    top: 15px;
 
+    font-size: 25px;
+}
+
+.title-banner::before {
+    left: 12px;
+}
+
+.title-banner::after {
+    right: 12px;
 }
 
 .title-main {
 
-    font-size: 36px;
+    font-size: 32px;
 
-    color: #874c35;
+    color: #814b35;
 
-    text-shadow: 2px 2px #fff;
+    text-shadow:
+        2px 2px 0 white;
 
+    letter-spacing: 1px;
 }
 
 .title-sub {
@@ -216,94 +192,63 @@ body {
 
     margin-top: 3px;
 
-    color: #e87591;
+    font-size: 16px;
 
-    font-size: 18px;
-
+    color: #e87994;
 }
 
-/* 게임 장면 */
+/* =========================
+   게임 장면
+========================= */
 
 .scene {
 
-    height: 300px;
-
     position: relative;
+
+    height: 235px;
 
     overflow: hidden;
 
-    border: 5px solid #fff8eb;
+    border-radius: 30px;
 
-    border-radius: 35px;
+    border: 5px solid #fff8ec;
 
     background:
+        linear-gradient(
+            to bottom,
+            #bcebf7 0%,
+            #cfeef0 48%,
+            #d9f2bd 49%,
+            #9bd16f 100%
+        );
 
-        linear-gradient(#bcecf7 0 42%, #d9f3bd 43% 100%);
-
-    box-shadow: 0 7px 0 #91c77b;
-
+    box-shadow: 0 6px 0 #91c578;
 }
 
-/* 해 */
+/* 태양 */
 
 .sun {
 
     position: absolute;
 
-    right: 28px;
+    right: 30px;
 
     top: 18px;
 
-    font-size: 60px;
+    font-size: 50px;
 
-    animation: sunMove 4s infinite alternate ease-in-out;
-
+    animation: sunMove 4s ease-in-out infinite alternate;
 }
 
 @keyframes sunMove {
 
-    from { transform: rotate(-5deg); }
+    from {
+        transform: rotate(-5deg);
+    }
 
-    to { transform: rotate(5deg); }
-
-}
-
-/* 언덕 */
-
-.hill {
-
-    position: absolute;
-
-    width: 120%;
-
-    height: 180px;
-
-    left: -10%;
-
-    bottom: -95px;
-
-    border-radius: 50%;
-
-    background: #91ce6c;
-
-}
-
-.hill2 {
-
-    position: absolute;
-
-    width: 100%;
-
-    height: 150px;
-
-    right: -35%;
-
-    bottom: -80px;
-
-    border-radius: 50%;
-
-    background: #a9dc7d;
-
+    to {
+        transform: rotate(5deg);
+    }
 }
 
 /* 나무 */
@@ -312,22 +257,55 @@ body {
 
     position: absolute;
 
-    font-size: 60px;
+    bottom: 40px;
 
-    bottom: 55px;
+    font-size: 52px;
 
+    z-index: 2;
 }
 
 .tree1 {
-
     left: 12px;
-
 }
 
 .tree2 {
-
     right: 8px;
+}
 
+/* 언덕 */
+
+.hill1 {
+
+    position: absolute;
+
+    width: 120%;
+    height: 135px;
+
+    left: -10%;
+    bottom: -82px;
+
+    border-radius: 50%;
+
+    background: #91ce6d;
+
+    z-index: 1;
+}
+
+.hill2 {
+
+    position: absolute;
+
+    width: 100%;
+    height: 115px;
+
+    right: -30%;
+    bottom: -70px;
+
+    border-radius: 50%;
+
+    background: #a9dc7d;
+
+    z-index: 1;
 }
 
 /* 꽃 */
@@ -336,15 +314,17 @@ body {
 
     position: absolute;
 
-    bottom: 7px;
+    left: 8px;
+    bottom: 5px;
 
-    left: 10px;
+    font-size: 25px;
 
-    font-size: 27px;
-
+    z-index: 3;
 }
 
-/* 단이 */
+/* =========================
+   단이
+========================= */
 
 .dani {
 
@@ -352,88 +332,96 @@ body {
 
     right: 7%;
 
-    bottom: 28px;
+    bottom: 20px;
 
-    font-size: 115px;
+    z-index: 4;
 
-    filter: drop-shadow(0 7px 4px rgba(0,0,0,.18));
+    font-size: 92px;
 
-    animation: daniBreath 2s infinite ease-in-out;
+    filter:
+        drop-shadow(
+            0 6px 4px rgba(0,0,0,.18)
+        );
 
+    animation:
+        daniBreath 2s ease-in-out infinite;
 }
 
 @keyframes daniBreath {
 
     50% {
-
-        transform: translateY(-6px);
-
+        transform: translateY(-5px);
     }
-
 }
 
 .dani-happy {
 
-    animation: daniHappy .55s infinite alternate;
-
+    animation:
+        daniHappy .55s ease-in-out infinite alternate;
 }
 
 @keyframes daniHappy {
 
     from {
-
-        transform: translateY(0) rotate(-5deg);
-
+        transform:
+            translateY(0)
+            rotate(-5deg);
     }
 
     to {
-
-        transform: translateY(-35px) rotate(7deg);
-
+        transform:
+            translateY(-28px)
+            rotate(7deg);
     }
-
 }
 
 .dani-sad {
 
-    animation: daniSad .4s infinite alternate;
-
+    animation:
+        daniSad .4s ease-in-out infinite alternate;
 }
 
 @keyframes daniSad {
 
-    from { transform: rotate(0); }
+    from {
+        transform: rotate(0);
+    }
 
-    to { transform: rotate(-10deg); }
-
+    to {
+        transform: rotate(-9deg);
+    }
 }
 
-/* 말풍선 */
+/* =========================
+   말풍선
+========================= */
 
 .bubble {
 
     position: absolute;
 
     left: 6%;
+    top: 28px;
 
-    top: 35px;
+    width: 53%;
 
-    width: 52%;
-
-    padding: 15px 12px;
+    padding: 12px 10px;
 
     background: white;
 
-    border: 4px solid #f2a9bd;
+    border: 4px solid #f2a8bd;
 
-    border-radius: 25px;
-
-    font-size: 21px;
+    border-radius: 23px;
 
     text-align: center;
 
-    box-shadow: 0 5px 0 #e4cbd2;
+    font-size: 18px;
 
+    line-height: 1.25;
+
+    box-shadow: 0 5px 0 #e5ccd3;
+
+    z-index: 5;
 }
 
 .bubble::after {
@@ -444,103 +432,140 @@ body {
 
     right: 18%;
 
-    bottom: -20px;
+    bottom: -18px;
 
-    border: 18px solid transparent;
+    border:
+        17px solid transparent;
 
-    border-top-color: #f2a9bd;
-
+    border-top-color: #f2a8bd;
 }
 
-/* 문제 */
+/* =========================
+   문제
+========================= */
 
 .question {
 
-    margin: 22px auto 15px;
-
     width: fit-content;
-
     max-width: 95%;
 
-    background: #fffaf1;
+    margin: 15px auto 12px;
 
-    border: 4px solid #e4c39a;
+    padding: 9px 24px;
 
-    border-radius: 25px;
+    background: #fffaf0;
 
-    padding: 12px 25px;
+    border: 4px solid #e4c39c;
 
-    font-size: 43px;
+    border-radius: 23px;
 
-    color: #603d30;
+    box-shadow: 0 6px 0 #cdae82;
 
-    box-shadow: 0 6px 0 #cfae83;
+    font-size: 39px;
 
+    color: #603b2d;
+
+    text-align: center;
 }
 
-/* 정답 버튼 */
+/* =========================
+   발바닥 답 버튼
+========================= */
 
 .answers {
 
     display: grid;
 
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns:
+        repeat(3, 1fr);
 
-    gap: 14px;
+    gap: 12px;
+
+    width: 100%;
 
     max-width: 650px;
 
-    margin: auto;
-
+    margin: 0 auto;
 }
 
 .answer {
 
-    min-height: 100px;
+    position: relative;
 
-    border: none;
+    min-height: 78px;
 
-    border-radius: 30px;
+    border: 0;
 
-    background: #f28caf;
+    border-radius: 25px;
+
+    background: #f28bb0;
 
     color: white;
 
     font-family: 'Jua', sans-serif;
 
-    font-size: 36px;
+    font-size: 31px;
 
-    box-shadow: 0 9px 0 #d82d68;
+    box-shadow:
+        0 8px 0 #d72d68;
 
     cursor: pointer;
 
+    transition:
+        transform .1s,
+        box-shadow .1s;
+}
+
+/* 발바닥 느낌 */
+
+.answer::before {
+
+    content: "●  ●";
+
+    position: absolute;
+
+    top: 7px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    font-size: 12px;
+
+    letter-spacing: 5px;
+
+    opacity: .55;
 }
 
 .answer:active {
 
-    transform: translateY(8px);
+    transform:
+        translateY(7px);
 
-    box-shadow: 0 1px 0 #d82d68;
-
+    box-shadow:
+        0 1px 0 #d72d68;
 }
 
 .answer.correct {
 
-    background: #82d678;
+    background: #82d578;
 
-    box-shadow: 0 9px 0 #4ca84b;
-
+    box-shadow:
+        0 8px 0 #4ca94b;
 }
 
 .answer.wrong {
 
-    background: #bdbdbd;
+    background: #bcbcbc;
 
-    box-shadow: 0 9px 0 #888;
-
+    box-shadow:
+        0 8px 0 #888;
 }
 
-/* 하단 */
+/* =========================
+   아래쪽
+========================= */
 
 .bottom {
 
@@ -548,30 +573,31 @@ body {
 
     align-items: center;
 
-    gap: 10px;
+    gap: 8px;
 
-    margin-top: 18px;
-
+    margin-top: 14px;
 }
 
 .action {
 
-    border: none;
+    border: 0;
 
-    background: #fff3dc;
+    background: #fff2db;
 
-    color: #70442f;
+    color: #70432e;
 
-    border-radius: 20px;
+    border-radius: 17px;
 
-    padding: 12px 16px;
+    padding: 9px 12px;
 
     font-family: 'Jua', sans-serif;
 
-    font-size: 18px;
+    font-size: 16px;
 
-    box-shadow: 0 5px 0 #d3b38b;
+    white-space: nowrap;
 
+    box-shadow:
+        0 4px 0 #d2b18a;
 }
 
 .progress {
@@ -580,29 +606,30 @@ body {
 
     background: white;
 
-    border: 3px solid #e3cba9;
+    border: 3px solid #e3c9a5;
 
-    border-radius: 20px;
+    border-radius: 17px;
 
-    padding: 6px;
-
+    padding: 5px;
 }
 
 .progress-bar {
 
-    height: 15px;
+    height: 12px;
 
     width: 0%;
 
-    background: #ffd467;
+    background: #ffd265;
 
-    border-radius: 15px;
+    border-radius: 12px;
 
-    transition: width .3s;
-
+    transition:
+        width .3s;
 }
 
-/* 정답 팝업 */
+/* =========================
+   정답 팝업
+========================= */
 
 .popup {
 
@@ -613,156 +640,187 @@ body {
     display: none;
 
     align-items: center;
-
     justify-content: center;
 
-    background: rgba(70,50,40,.35);
+    background:
+        rgba(70,50,40,.38);
 
-    z-index: 20;
-
+    z-index: 100;
 }
 
 .popup-card {
 
-    width: 85%;
+    width: 82%;
 
-    max-width: 360px;
+    max-width: 350px;
 
-    padding: 25px;
+    padding: 24px;
 
     text-align: center;
 
     background: #fff8ec;
 
-    border: 5px solid #efaec3;
+    border: 5px solid #efafc4;
 
     border-radius: 30px;
 
-    box-shadow: 0 10px 0 #c48670;
-
+    box-shadow:
+        0 9px 0 #c58470;
 }
 
 .popup-big {
-
-    font-size: 65px;
-
+    font-size: 60px;
 }
 
 .popup-title {
-
-    font-size: 30px;
-
-    margin: 5px;
-
+    font-size: 29px;
+    margin: 4px;
 }
 
 .popup-text {
-
-    font-size: 20px;
-
+    white-space: pre-line;
+    font-size: 19px;
+    margin: 10px 0 18px;
 }
 
 .next-button {
 
-    border: none;
+    border: 0;
 
-    padding: 12px 28px;
+    padding: 11px 25px;
 
-    background: #f28caf;
+    background: #f28bb0;
 
     color: white;
 
-    border-radius: 20px;
+    border-radius: 19px;
 
     font-family: 'Jua', sans-serif;
 
-    font-size: 20px;
+    font-size: 19px;
 
-    box-shadow: 0 5px 0 #d82d68;
-
+    box-shadow:
+        0 5px 0 #d72d68;
 }
 
-/* 모바일 */
+/* =========================
+   작은 아이폰 화면
+========================= */
 
-@media (max-width: 500px) {
+@media (max-width: 430px) {
 
-    .title-main {
-
-        font-size: 30px;
-
-    }
-
-    .title-sub {
-
-        font-size: 16px;
-
-    }
-
-    .scene {
-
-        height: 270px;
-
-    }
-
-    .dani {
-
-        font-size: 92px;
-
-        right: 3%;
-
-    }
-
-    .bubble {
-
-        width: 58%;
-
-        font-size: 17px;
-
-    }
-
-    .question {
-
-        font-size: 38px;
-
-        padding: 10px 20px;
-
-    }
-
-    .answer {
-
-        min-height: 85px;
-
-        font-size: 30px;
-
-    }
-
-    .score-box {
-
-        font-size: 16px;
-
-        gap: 8px;
-
+    .game {
+        padding:
+            9px
+            10px
+            18px;
     }
 
     .level-box {
-
-        font-size: 19px;
-
+        font-size: 18px;
+        padding: 6px 10px;
     }
 
+    .level-small {
+        font-size: 12px;
+    }
+
+    .score-box {
+        font-size: 15px;
+        gap: 7px;
+        padding: 6px 9px;
+    }
+
+    .title-banner {
+        margin-top: 5px;
+        margin-bottom: 10px;
+        padding: 10px 8px;
+    }
+
+    .title-main {
+        font-size: 27px;
+    }
+
+    .title-sub {
+        font-size: 14px;
+    }
+
+    .scene {
+        height: 215px;
+    }
+
+    .bubble {
+        top: 25px;
+        left: 5%;
+        width: 57%;
+        font-size: 16px;
+        padding: 10px 7px;
+    }
+
+    .dani {
+        font-size: 78px;
+        right: 2%;
+        bottom: 18px;
+    }
+
+    .tree {
+        font-size: 45px;
+    }
+
+    .sun {
+        font-size: 43px;
+        right: 20px;
+    }
+
+    .question {
+        margin-top: 13px;
+        margin-bottom: 10px;
+        padding: 8px 18px;
+        font-size: 34px;
+    }
+
+    .answers {
+        gap: 9px;
+    }
+
+    .answer {
+        min-height: 70px;
+        border-radius: 22px;
+        font-size: 28px;
+        box-shadow:
+            0 7px 0 #d72d68;
+    }
+
+    .bottom {
+        margin-top: 12px;
+    }
+
+    .action {
+        padding: 8px 9px;
+        font-size: 14px;
+    }
+
+    .progress-bar {
+        height: 10px;
+    }
 }
 
 </style>
-
 </head>
+
 
 <body>
 
 <div class="game">
 
+    <!-- 배경 구름 -->
+
     <div class="cloud cloud1">☁️</div>
 
     <div class="cloud cloud2">☁️</div>
+
+
+    <!-- 상단 정보 -->
 
     <div class="top">
 
@@ -772,157 +830,223 @@ body {
 
             <br>
 
-            <span class="level-small">쿠키 언덕</span>
+            <span class="level-small">
+                쿠키 언덕
+            </span>
 
         </div>
 
+
         <div class="score-box">
 
-            ⭐ <span id="score">0</span>
+            ⭐
+            <span
+                class="score-number"
+                id="score"
+            >0</span>
 
-            🍖 <span id="coins">100</span>
+            🍖
+            <span
+                class="score-number"
+                id="coins"
+            >100</span>
 
         </div>
 
     </div>
 
-    <div class="title">
+
+    <!-- 제목 -->
+
+    <div class="title-banner">
 
         <div class="title-main">
 
-            🐾 단이의 곱셈 모험 🐾
+            단이의 곱셈 모험!
 
         </div>
 
         <span class="title-sub">
 
-            맛있는 간식을 찾아서 출발!
+            맛있는 간식을 찾아서 출발! 🐶💕
 
         </span>
 
     </div>
 
+
+    <!-- 게임 장면 -->
+
     <div class="scene">
 
-        <div class="sun">☀️</div>
+        <div class="sun">
+            ☀️
+        </div>
 
-        <div class="tree tree1">🌳</div>
 
-        <div class="tree tree2">🌳</div>
+        <div class="tree tree1">
+            🌳
+        </div>
 
-        <div class="hill"></div>
+
+        <div class="tree tree2">
+            🌳
+        </div>
+
+
+        <div class="hill1"></div>
 
         <div class="hill2"></div>
 
+
         <div class="flowers">
-
             🌷 🌼 🌸 🌼
-
         </div>
 
-        <div class="bubble" id="message">
 
+        <!-- 말풍선 -->
+
+        <div
+            class="bubble"
+            id="message"
+        >
             이 문제의 정답은 뭘까? 💕
-
         </div>
+
 
         <!-- 단이 -->
 
-        <div class="dani" id="dani">
-
+        <div
+            class="dani"
+            id="dani"
+        >
             🐶
-
         </div>
 
     </div>
 
-    <div class="question" id="question">
 
+    <!-- 문제 -->
+
+    <div
+        class="question"
+        id="question"
+    >
         3 × 2 = ?
-
     </div>
+
+
+    <!-- 정답 -->
 
     <div class="answers">
 
-        <button class="answer" id="answer0" onclick="checkAnswer(0)">
-
+        <button
+            class="answer"
+            id="answer0"
+            onclick="checkAnswer(0)"
+        >
             5
-
         </button>
 
-        <button class="answer" id="answer1" onclick="checkAnswer(1)">
 
+        <button
+            class="answer"
+            id="answer1"
+            onclick="checkAnswer(1)"
+        >
             6
-
         </button>
 
-        <button class="answer" id="answer2" onclick="checkAnswer(2)">
 
+        <button
+            class="answer"
+            id="answer2"
+            onclick="checkAnswer(2)"
+        >
             8
-
         </button>
 
     </div>
 
+
+    <!-- 하단 -->
+
     <div class="bottom">
 
-        <button class="action" onclick="restartGame()">
-
+        <button
+            class="action"
+            onclick="restartGame()"
+        >
             ↩ 처음부터
-
         </button>
+
 
         <div class="progress">
 
-            <div class="progress-bar" id="progressBar"></div>
+            <div
+                class="progress-bar"
+                id="progressBar"
+            ></div>
 
         </div>
 
-        <button class="action" onclick="showHint()">
 
+        <button
+            class="action"
+            onclick="showHint()"
+        >
             💡 힌트
-
         </button>
 
     </div>
 
 </div>
 
+
 <!-- 정답 팝업 -->
 
-<div class="popup" id="popup">
+<div
+    class="popup"
+    id="popup"
+>
 
     <div class="popup-card">
 
         <div class="popup-big">
-
             🐶💕🍖
-
         </div>
+
 
         <div class="popup-title">
-
             정답이야!
-
         </div>
 
-        <div class="popup-text" id="popupText">
 
-            단이가 간식을 받았어요!
-
+        <div
+            class="popup-text"
+            id="popupText"
+        >
+            단이가 맛있는 간식을 받았어요!
         </div>
 
-        <button class="next-button" onclick="nextQuestion()">
 
+        <button
+            class="next-button"
+            onclick="nextQuestion()"
+        >
             다음 문제
-
         </button>
 
     </div>
 
 </div>
 
+
 <script>
+
+/* =========================
+   게임 변수
+========================= */
 
 let answer = 0;
 
@@ -936,23 +1060,38 @@ let level = 2;
 
 let solved = 0;
 
-const dani = document.getElementById("dani");
 
-const message = document.getElementById("message");
+/* =========================
+   화면 요소
+========================= */
 
-const question = document.getElementById("question");
+const dani =
+    document.getElementById("dani");
 
-const scoreText = document.getElementById("score");
+const message =
+    document.getElementById("message");
 
-const coinsText = document.getElementById("coins");
+const question =
+    document.getElementById("question");
 
-const levelText = document.getElementById("level");
+const scoreText =
+    document.getElementById("score");
 
-const progressBar = document.getElementById("progressBar");
+const coinsText =
+    document.getElementById("coins");
 
-const popup = document.getElementById("popup");
+const levelText =
+    document.getElementById("level");
 
-const popupText = document.getElementById("popupText");
+const progressBar =
+    document.getElementById("progressBar");
+
+const popup =
+    document.getElementById("popup");
+
+const popupText =
+    document.getElementById("popupText");
+
 
 const buttons = [
 
@@ -964,17 +1103,22 @@ const buttons = [
 
 ];
 
-/* 새 문제 */
+
+/* =========================
+   새 문제 만들기
+========================= */
 
 function nextQuestion() {
 
     popup.style.display = "none";
 
+
     dani.className = "dani";
 
-    message.innerText =
 
+    message.innerText =
         "이 문제의 정답은 뭘까? 💕";
+
 
     buttons.forEach(function(button) {
 
@@ -984,65 +1128,96 @@ function nextQuestion() {
 
     });
 
-    /* 곱셈 문제 */
+
+    /* 2단 ~ 4단 */
 
     const number1 =
-
         Math.floor(Math.random() * 3) + 2;
 
-    const number2 =
 
+    /* ×2 ~ ×9 */
+
+    const number2 =
         Math.floor(Math.random() * 8) + 2;
 
-    answer = number1 * number2;
+
+    answer =
+        number1 * number2;
+
 
     question.innerText =
+        number1 +
+        " × " +
+        number2 +
+        " = ?";
 
-        number1 + " × " + number2 + " = ?";
 
     /* 정답 위치 */
 
     correctPosition =
-
         Math.floor(Math.random() * 3);
 
+
+    /* 오답 */
+
     let wrong1 =
-
         answer +
+        Math.floor(Math.random() * 3) +
+        1;
 
-        Math.floor(Math.random() * 3) + 1;
 
     let wrong2 =
-
         answer -
+        (Math.floor(Math.random() * 3) + 1);
 
-        Math.floor(Math.random() * 3) - 1;
 
-    if (wrong2 <= 0 || wrong2 === wrong1) {
+    if (
+        wrong2 <= 0 ||
+        wrong2 === wrong1
+    ) {
 
-        wrong2 = answer + 5;
+        wrong2 =
+            answer + 5;
 
     }
 
+
     const options = [];
 
-    options[correctPosition] = answer;
 
-    options[(correctPosition + 1) % 3] = wrong1;
+    options[correctPosition] =
+        answer;
 
-    options[(correctPosition + 2) % 3] = wrong2;
 
-    buttons.forEach(function(button, index) {
+    options[
+        (correctPosition + 1) % 3
+    ] = wrong1;
 
-        button.innerText = options[index];
+
+    options[
+        (correctPosition + 2) % 3
+    ] = wrong2;
+
+
+    buttons.forEach(function(
+        button,
+        index
+    ) {
+
+        button.innerText =
+            options[index];
 
     });
+
 
     updateProgress();
 
 }
 
-/* 정답 확인 */
+
+/* =========================
+   정답 확인
+========================= */
 
 function checkAnswer(index) {
 
@@ -1052,7 +1227,12 @@ function checkAnswer(index) {
 
     });
 
-    if (index === correctPosition) {
+
+    /* 정답 */
+
+    if (
+        index === correctPosition
+    ) {
 
         score += 10;
 
@@ -1060,99 +1240,150 @@ function checkAnswer(index) {
 
         solved++;
 
-        buttons[index].classList.add("correct");
+
+        buttons[index]
+            .classList
+            .add("correct");
+
 
         dani.className =
-
             "dani dani-happy";
 
-        message.innerText =
 
-            "정답이야! 🎉 단이가 신났어요!";
+        message.innerText =
+            "정답이야! 🎉\n단이가 신났어요!";
+
 
         /* 10문제마다 레벨업 */
 
-        if (solved % 10 === 0) {
+        if (
+            solved % 10 === 0
+        ) {
 
             level++;
 
-            levelText.innerText = level;
+            levelText.innerText =
+                level;
 
         }
 
+
         updateScore();
 
+
         popupText.innerText =
-
-            "⭐ 별 +10  🍖 간식 +10\n현재 간식 " +
-
+            "⭐ 별 +10\n" +
+            "🍖 간식 +10\n\n" +
+            "현재 간식 " +
             coins +
-
             "개!";
 
-        popup.style.display = "flex";
 
-    } else {
+        popup.style.display =
+            "flex";
 
-        buttons[index].classList.add("wrong");
+
+    }
+
+    /* 오답 */
+
+    else {
+
+        buttons[index]
+            .classList
+            .add("wrong");
+
 
         dani.className =
-
             "dani dani-sad";
 
+
         message.innerText =
+            "앗, 아쉬워! 💦\n" +
+            "다시 한번 생각해보자!";
 
-            "앗, 아쉬워! 💦\n다시 한번 생각해보자!";
 
-        setTimeout(function() {
+        setTimeout(
+            function() {
 
-            nextQuestion();
+                nextQuestion();
 
-        }, 1300);
+            },
+            1300
+        );
 
     }
 
 }
 
-/* 힌트 */
+
+/* =========================
+   힌트
+========================= */
 
 function showHint() {
 
-    message.innerText =
+    const parts =
+        question.innerText
+            .replace("?", "")
+            .split("×");
 
-        "💡 힌트! " +
 
-        question.innerText.split("=")[0] +
+    if (parts.length === 2) {
 
-        "의 답을 생각해봐!";
+        const a =
+            parseInt(parts[0]);
+
+        const b =
+            parseInt(parts[1]);
+
+
+        message.innerText =
+            "💡 힌트!\n" +
+            a +
+            "을 " +
+            b +
+            "번 더해보자!";
+
+    }
 
 }
 
-/* 점수 */
+
+/* =========================
+   점수 업데이트
+========================= */
 
 function updateScore() {
 
-    scoreText.innerText = score;
+    scoreText.innerText =
+        score;
 
-    coinsText.innerText = coins;
+    coinsText.innerText =
+        coins;
 
 }
 
-/* 진행도 */
+
+/* =========================
+   진행도
+========================= */
 
 function updateProgress() {
 
-    let progress =
-
+    const progress =
         (solved % 10) * 10;
 
-    progressBar.style.width =
 
+    progressBar.style.width =
         progress + "%";
 
 }
 
-/* 처음부터 */
+
+/* =========================
+   처음부터
+========================= */
 
 function restartGame() {
 
@@ -1164,24 +1395,33 @@ function restartGame() {
 
     solved = 0;
 
-    scoreText.innerText = 0;
 
-    coinsText.innerText = 100;
+    scoreText.innerText =
+        "0";
 
-    levelText.innerText = 2;
+    coinsText.innerText =
+        "100";
 
-    progressBar.style.width = "0%";
+    levelText.innerText =
+        "2";
+
+
+    progressBar.style.width =
+        "0%";
+
 
     nextQuestion();
 
 }
 
-/* 첫 문제 */
+
+/* =========================
+   게임 시작
+========================= */
 
 nextQuestion();
 
 </script>
 
 </body>
-
 </html>
