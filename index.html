@@ -1,461 +1,1187 @@
 <!DOCTYPE html>
+
 <html lang="ko">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Daily Eng-Buddy</title>
-    <!-- Tailwind CSS (예쁜 디자인을 위해 불러오기) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome (아이콘을 위해 불러오기) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (귀여운 둥근 글꼴) -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Nunito', 'Malgun Gothic', sans-serif;
-            background-color: #f9fafb;
-            -webkit-tap-highlight-color: transparent;
-        }
-        /* 화면 전환 애니메이션 */
-        .view-section {
-            display: none;
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-        .view-section.active {
-            display: flex;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes bounce-in {
-            0% { transform: scale(0.8); opacity: 0; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .animate-bounce-in {
-            animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-    </style>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<title>단이의 곱셈 모험</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+
+* {
+
+    box-sizing: border-box;
+
+    -webkit-tap-highlight-color: transparent;
+
+}
+
+body {
+
+    margin: 0;
+
+    background: #dff4df;
+
+    font-family: 'Jua', sans-serif;
+
+    color: #5b3a2d;
+
+    user-select: none;
+
+}
+
+.game {
+
+    width: 100%;
+
+    max-width: 760px;
+
+    min-height: 100vh;
+
+    margin: auto;
+
+    padding: 14px;
+
+    overflow: hidden;
+
+    position: relative;
+
+    background:
+
+        radial-gradient(circle at 10% 20%, #ffffff 0 35px, transparent 36px),
+
+        radial-gradient(circle at 88% 17%, #ffffff 0 30px, transparent 31px),
+
+        linear-gradient(
+
+            to bottom,
+
+            #bcecf7 0%,
+
+            #d9f4d0 43%,
+
+            #b8df91 100%
+
+        );
+
+}
+
+/* 구름 */
+
+.cloud {
+
+    position: absolute;
+
+    font-size: 48px;
+
+    opacity: .8;
+
+    animation: cloudMove 5s infinite alternate ease-in-out;
+
+}
+
+.cloud1 {
+
+    left: 15px;
+
+    top: 85px;
+
+}
+
+.cloud2 {
+
+    right: 20px;
+
+    top: 150px;
+
+    font-size: 40px;
+
+}
+
+@keyframes cloudMove {
+
+    from { transform: translateY(0); }
+
+    to { transform: translateY(-8px); }
+
+}
+
+/* 상단 */
+
+.top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    position: relative;
+
+    z-index: 3;
+
+}
+
+.level-box,
+
+.score-box {
+
+    background: #fffaf0;
+
+    border: 3px solid #e8c99f;
+
+    border-radius: 24px;
+
+    padding: 9px 15px;
+
+    box-shadow: 0 5px 0 #d4b486;
+
+}
+
+.level-box {
+
+    font-size: 22px;
+
+}
+
+.level-small {
+
+    font-size: 15px;
+
+}
+
+.score-box {
+
+    display: flex;
+
+    gap: 15px;
+
+    font-size: 20px;
+
+}
+
+.score-box span {
+
+    color: #d97835;
+
+}
+
+/* 제목 */
+
+.title {
+
+    position: relative;
+
+    z-index: 2;
+
+    text-align: center;
+
+    margin: 18px auto 15px;
+
+    width: fit-content;
+
+    max-width: 95%;
+
+    background: #fff1dc;
+
+    border: 4px solid #c88758;
+
+    border-radius: 28px;
+
+    padding: 10px 25px;
+
+    box-shadow: 0 7px 0 #b56d45;
+
+}
+
+.title-main {
+
+    font-size: 36px;
+
+    color: #874c35;
+
+    text-shadow: 2px 2px #fff;
+
+}
+
+.title-sub {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #e87591;
+
+    font-size: 18px;
+
+}
+
+/* 게임 장면 */
+
+.scene {
+
+    height: 300px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    border: 5px solid #fff8eb;
+
+    border-radius: 35px;
+
+    background:
+
+        linear-gradient(#bcecf7 0 42%, #d9f3bd 43% 100%);
+
+    box-shadow: 0 7px 0 #91c77b;
+
+}
+
+/* 해 */
+
+.sun {
+
+    position: absolute;
+
+    right: 28px;
+
+    top: 18px;
+
+    font-size: 60px;
+
+    animation: sunMove 4s infinite alternate ease-in-out;
+
+}
+
+@keyframes sunMove {
+
+    from { transform: rotate(-5deg); }
+
+    to { transform: rotate(5deg); }
+
+}
+
+/* 언덕 */
+
+.hill {
+
+    position: absolute;
+
+    width: 120%;
+
+    height: 180px;
+
+    left: -10%;
+
+    bottom: -95px;
+
+    border-radius: 50%;
+
+    background: #91ce6c;
+
+}
+
+.hill2 {
+
+    position: absolute;
+
+    width: 100%;
+
+    height: 150px;
+
+    right: -35%;
+
+    bottom: -80px;
+
+    border-radius: 50%;
+
+    background: #a9dc7d;
+
+}
+
+/* 나무 */
+
+.tree {
+
+    position: absolute;
+
+    font-size: 60px;
+
+    bottom: 55px;
+
+}
+
+.tree1 {
+
+    left: 12px;
+
+}
+
+.tree2 {
+
+    right: 8px;
+
+}
+
+/* 꽃 */
+
+.flowers {
+
+    position: absolute;
+
+    bottom: 7px;
+
+    left: 10px;
+
+    font-size: 27px;
+
+}
+
+/* 단이 */
+
+.dani {
+
+    position: absolute;
+
+    right: 7%;
+
+    bottom: 28px;
+
+    font-size: 115px;
+
+    filter: drop-shadow(0 7px 4px rgba(0,0,0,.18));
+
+    animation: daniBreath 2s infinite ease-in-out;
+
+}
+
+@keyframes daniBreath {
+
+    50% {
+
+        transform: translateY(-6px);
+
+    }
+
+}
+
+.dani-happy {
+
+    animation: daniHappy .55s infinite alternate;
+
+}
+
+@keyframes daniHappy {
+
+    from {
+
+        transform: translateY(0) rotate(-5deg);
+
+    }
+
+    to {
+
+        transform: translateY(-35px) rotate(7deg);
+
+    }
+
+}
+
+.dani-sad {
+
+    animation: daniSad .4s infinite alternate;
+
+}
+
+@keyframes daniSad {
+
+    from { transform: rotate(0); }
+
+    to { transform: rotate(-10deg); }
+
+}
+
+/* 말풍선 */
+
+.bubble {
+
+    position: absolute;
+
+    left: 6%;
+
+    top: 35px;
+
+    width: 52%;
+
+    padding: 15px 12px;
+
+    background: white;
+
+    border: 4px solid #f2a9bd;
+
+    border-radius: 25px;
+
+    font-size: 21px;
+
+    text-align: center;
+
+    box-shadow: 0 5px 0 #e4cbd2;
+
+}
+
+.bubble::after {
+
+    content: "";
+
+    position: absolute;
+
+    right: 18%;
+
+    bottom: -20px;
+
+    border: 18px solid transparent;
+
+    border-top-color: #f2a9bd;
+
+}
+
+/* 문제 */
+
+.question {
+
+    margin: 22px auto 15px;
+
+    width: fit-content;
+
+    max-width: 95%;
+
+    background: #fffaf1;
+
+    border: 4px solid #e4c39a;
+
+    border-radius: 25px;
+
+    padding: 12px 25px;
+
+    font-size: 43px;
+
+    color: #603d30;
+
+    box-shadow: 0 6px 0 #cfae83;
+
+}
+
+/* 정답 버튼 */
+
+.answers {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 14px;
+
+    max-width: 650px;
+
+    margin: auto;
+
+}
+
+.answer {
+
+    min-height: 100px;
+
+    border: none;
+
+    border-radius: 30px;
+
+    background: #f28caf;
+
+    color: white;
+
+    font-family: 'Jua', sans-serif;
+
+    font-size: 36px;
+
+    box-shadow: 0 9px 0 #d82d68;
+
+    cursor: pointer;
+
+}
+
+.answer:active {
+
+    transform: translateY(8px);
+
+    box-shadow: 0 1px 0 #d82d68;
+
+}
+
+.answer.correct {
+
+    background: #82d678;
+
+    box-shadow: 0 9px 0 #4ca84b;
+
+}
+
+.answer.wrong {
+
+    background: #bdbdbd;
+
+    box-shadow: 0 9px 0 #888;
+
+}
+
+/* 하단 */
+
+.bottom {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 18px;
+
+}
+
+.action {
+
+    border: none;
+
+    background: #fff3dc;
+
+    color: #70442f;
+
+    border-radius: 20px;
+
+    padding: 12px 16px;
+
+    font-family: 'Jua', sans-serif;
+
+    font-size: 18px;
+
+    box-shadow: 0 5px 0 #d3b38b;
+
+}
+
+.progress {
+
+    flex: 1;
+
+    background: white;
+
+    border: 3px solid #e3cba9;
+
+    border-radius: 20px;
+
+    padding: 6px;
+
+}
+
+.progress-bar {
+
+    height: 15px;
+
+    width: 0%;
+
+    background: #ffd467;
+
+    border-radius: 15px;
+
+    transition: width .3s;
+
+}
+
+/* 정답 팝업 */
+
+.popup {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(70,50,40,.35);
+
+    z-index: 20;
+
+}
+
+.popup-card {
+
+    width: 85%;
+
+    max-width: 360px;
+
+    padding: 25px;
+
+    text-align: center;
+
+    background: #fff8ec;
+
+    border: 5px solid #efaec3;
+
+    border-radius: 30px;
+
+    box-shadow: 0 10px 0 #c48670;
+
+}
+
+.popup-big {
+
+    font-size: 65px;
+
+}
+
+.popup-title {
+
+    font-size: 30px;
+
+    margin: 5px;
+
+}
+
+.popup-text {
+
+    font-size: 20px;
+
+}
+
+.next-button {
+
+    border: none;
+
+    padding: 12px 28px;
+
+    background: #f28caf;
+
+    color: white;
+
+    border-radius: 20px;
+
+    font-family: 'Jua', sans-serif;
+
+    font-size: 20px;
+
+    box-shadow: 0 5px 0 #d82d68;
+
+}
+
+/* 모바일 */
+
+@media (max-width: 500px) {
+
+    .title-main {
+
+        font-size: 30px;
+
+    }
+
+    .title-sub {
+
+        font-size: 16px;
+
+    }
+
+    .scene {
+
+        height: 270px;
+
+    }
+
+    .dani {
+
+        font-size: 92px;
+
+        right: 3%;
+
+    }
+
+    .bubble {
+
+        width: 58%;
+
+        font-size: 17px;
+
+    }
+
+    .question {
+
+        font-size: 38px;
+
+        padding: 10px 20px;
+
+    }
+
+    .answer {
+
+        min-height: 85px;
+
+        font-size: 30px;
+
+    }
+
+    .score-box {
+
+        font-size: 16px;
+
+        gap: 8px;
+
+    }
+
+    .level-box {
+
+        font-size: 19px;
+
+    }
+
+}
+
+</style>
+
 </head>
-<body class="selection:bg-blue-200 text-gray-800">
 
-    <div class="max-w-md mx-auto bg-gray-50 min-h-screen relative shadow-2xl overflow-hidden flex flex-col">
-        
-        <!-- 상단 바 (별점, 연속 학습일 표시) -->
-        <div class="flex justify-between items-center p-6 bg-white/80 backdrop-blur-md sticky top-0 z-40">
-            <h1 class="text-2xl font-black tracking-tight">
-                <span class="text-blue-500">Eng</span>-Buddy <i class="fa-solid fa-dragon text-green-500 text-lg"></i>
-            </h1>
-            <div class="flex gap-3">
-                <div class="flex items-center bg-yellow-100 px-3 py-1.5 rounded-full shadow-sm">
-                    <i class="fa-solid fa-star text-yellow-500 mr-1.5 text-sm"></i>
-                    <span class="font-bold text-yellow-700" id="ui-stars">0</span>
-                </div>
-                <div class="flex items-center bg-orange-100 px-3 py-1.5 rounded-full shadow-sm">
-                    <i class="fa-solid fa-fire text-orange-500 mr-1 text-sm"></i>
-                    <span class="font-bold text-orange-700"><span id="ui-streak">0</span>일</span>
-                </div>
-            </div>
+<body>
+
+<div class="game">
+
+    <div class="cloud cloud1">☁️</div>
+
+    <div class="cloud cloud2">☁️</div>
+
+    <div class="top">
+
+        <div class="level-box">
+
+            ⭐ LV. <span id="level">2</span>
+
+            <br>
+
+            <span class="level-small">쿠키 언덕</span>
+
         </div>
 
-        <!-- 홈 화면 -->
-        <div id="view-home" class="view-section active flex-col gap-6 p-6 pb-32">
-            <div class="bg-gradient-to-br from-blue-400 to-blue-600 p-6 rounded-3xl text-white shadow-lg relative overflow-hidden">
-                <div class="relative z-10">
-                    <h2 class="text-2xl font-bold mb-1">안녕, 꼬마 친구! 👋</h2>
-                    <p class="text-blue-100 font-medium mb-4">오늘도 신나게 영어를 말해볼까?</p>
-                    
-                    <div id="home-status-incomplete">
-                        <button onclick="switchTab('challenge')" class="bg-white text-blue-600 font-black py-3 px-6 rounded-full shadow-md hover:scale-105 transition-transform flex items-center">
-                            <i class="fa-solid fa-play mr-2"></i> 오늘의 미션 시작하기
-                        </button>
-                    </div>
-                    <div id="home-status-complete" class="hidden">
-                        <div class="inline-flex items-center bg-white/20 px-4 py-2 rounded-full font-bold">
-                            <i class="fa-solid fa-champagne-glasses text-yellow-300 mr-2"></i> 오늘 미션 완료! 참 잘했어요!
-                        </div>
-                    </div>
-                </div>
-                <div class="absolute right-[-20px] bottom-[-20px] text-[100px] opacity-20 transform rotate-12">🐶</div>
-            </div>
+        <div class="score-box">
 
-            <div class="bg-white p-6 rounded-3xl shadow-sm border-2 border-gray-100">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-bold text-gray-700 text-lg">💡 오늘의 상황</h3>
-                    <span class="text-xs font-bold bg-blue-100 text-blue-600 px-2 py-1 rounded-lg" id="ui-day-badge">Day 1</span>
-                </div>
-                <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl">
-                    <div class="text-4xl" id="mission-emoji">👋</div>
-                    <div>
-                        <p class="font-bold text-gray-800" id="mission-situation">친구를 처음 만났을 때</p>
-                        <p class="text-sm text-gray-500 mt-1">이럴 땐 영어로 어떻게 말할까?</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+            ⭐ <span id="score">0</span>
 
-        <!-- 챌린지 화면 -->
-        <div id="view-challenge" class="view-section flex-col items-center text-center gap-6 p-6 pb-32 min-h-screen">
-            <h2 class="text-xl font-bold text-gray-600 mt-4" id="challenge-title">친구를 처음 만났을 때</h2>
-            
-            <div class="bg-white w-full rounded-3xl p-8 shadow-xl border border-gray-50 relative mt-4">
-                <div class="mb-8">
-                    <p class="text-gray-400 font-bold mb-2 text-sm">이렇게 말해봐요!</p>
-                    <h3 class="text-3xl font-black text-gray-800 mb-4" id="challenge-english">Hello! Nice to meet you.</h3>
-                    <p class="text-lg text-blue-500 font-bold bg-blue-50 py-2 rounded-xl" id="challenge-korean">안녕! 만나서 반가워.</p>
-                </div>
-                <button onclick="playAudio()" class="mx-auto flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-6 rounded-full font-bold transition-colors">
-                    <i class="fa-solid fa-volume-high"></i> 원어민 발음 듣기
-                </button>
-            </div>
+            🍖 <span id="coins">100</span>
 
-            <div class="mt-8 flex flex-col items-center w-full relative">
-                <!-- 성공 화면 (숨겨짐) -->
-                <div id="feedback-success" class="hidden flex-col items-center animate-bounce-in absolute top-0 bg-gray-50 w-full z-10 pb-10">
-                    <div class="w-32 h-32 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fa-solid fa-champagne-glasses text-6xl text-green-500"></i>
-                    </div>
-                    <h2 class="text-3xl font-black text-green-500 mb-2">Excellent!</h2>
-                    <p class="text-gray-600 font-bold mb-8">참 잘했어요! 별을 획득했습니다.</p>
-                    <button onclick="nextMission()" class="bg-green-500 text-white font-black text-lg py-4 px-12 rounded-full shadow-lg shadow-green-500/30 hover:bg-green-600 transition-colors">
-                        다음 미션 넘어가기
-                    </button>
-                </div>
-
-                <!-- 기본 녹음 UI -->
-                <div id="recording-ui" class="w-full flex flex-col items-center">
-                    <div id="feedback-fail" class="hidden mb-6 flex items-center text-red-500 bg-red-50 px-4 py-2 rounded-xl animate-pulse">
-                        <i class="fa-solid fa-circle-xmark mr-2"></i>
-                        <span class="font-bold">다시 한번 크게 말해볼까요?</span>
-                    </div>
-
-                    <div class="h-16 mb-4 flex items-center justify-center w-full px-4 text-center">
-                        <p id="transcript-text" class="text-sm font-bold text-gray-400">
-                            아래 마이크 버튼을 누르고 말하세요
-                        </p>
-                    </div>
-
-                    <!-- 마이크 버튼 -->
-                    <button id="btn-mic" onclick="startRecording()" class="w-28 h-28 rounded-full flex items-center justify-center shadow-2xl transition-all relative bg-gradient-to-br from-green-400 to-green-600 hover:scale-105 shadow-green-500/40">
-                        <div id="mic-pulse" class="hidden absolute inset-0 rounded-full border-4 border-red-300 animate-ping"></div>
-                        <i id="mic-icon" class="fa-solid fa-microphone text-4xl text-white"></i>
-                    </button>
-
-                    <!-- 미지원 안내 -->
-                    <div id="unsupported-msg" class="hidden mt-8 text-center bg-orange-50 p-4 rounded-2xl w-full">
-                        <p class="text-orange-600 font-bold text-sm mb-3">마이크를 쓸 수 없는 환경이에요 😢</p>
-                        <button onclick="manualPass()" class="bg-orange-500 text-white font-bold py-2 px-6 rounded-full shadow-md text-sm">
-                            큰 소리로 따라하고 여기 누르기!
-                        </button>
-                    </div>
-
-                    <!-- 수동 통과 버튼 (마이크 오류 대비) -->
-                    <button id="btn-manual" onclick="manualPass()" class="mt-8 text-xs text-gray-400 underline">
-                        앗, 마이크가 작동안하나요? (수동 통과)
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 보상 화면 -->
-        <div id="view-rewards" class="view-section flex-col gap-6 p-6 pb-32">
-            <h2 class="text-2xl font-black text-gray-800 text-center mt-2">나의 보상 상자 🎁</h2>
-            
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-yellow-50 p-6 rounded-3xl border-2 border-yellow-100 flex flex-col items-center justify-center">
-                    <i class="fa-solid fa-star text-4xl text-yellow-500 mb-2"></i>
-                    <p class="text-sm text-yellow-700 font-bold">모은 별</p>
-                    <p class="text-3xl font-black text-yellow-600"><span id="reward-stars">0</span>개</p>
-                </div>
-                <div class="bg-orange-50 p-6 rounded-3xl border-2 border-orange-100 flex flex-col items-center justify-center">
-                    <div class="text-4xl mb-2">🔥</div>
-                    <p class="text-sm text-orange-700 font-bold">연속 학습</p>
-                    <p class="text-3xl font-black text-orange-600"><span id="reward-streak">0</span>일</p>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-3xl shadow-sm border-2 border-gray-100 mt-4">
-                <h3 class="font-bold text-gray-700 text-lg mb-4">🎖️ 내 배지 컬렉션</h3>
-                <div class="grid grid-cols-3 gap-4" id="badges-container">
-                    <!-- 배지들은 자바스크립트에서 만들어집니다 -->
-                </div>
-            </div>
-        </div>
-
-        <!-- 하단 네비게이션 -->
-        <div class="fixed bottom-0 w-full max-w-md bg-white border-t-2 border-gray-100 flex justify-around p-4 pb-6 rounded-t-3xl shadow-[0_-4px_15px_rgba(0,0,0,0.05)] z-50">
-            <button onclick="switchTab('home')" id="nav-home" class="nav-btn flex flex-col items-center p-2 transition-all text-blue-500 scale-110">
-                <i class="fa-solid fa-house text-2xl mb-1"></i>
-                <span class="text-xs font-bold">홈</span>
-            </button>
-            <button onclick="switchTab('challenge')" id="nav-challenge" class="nav-btn flex flex-col items-center p-2 transition-all text-gray-400">
-                <div id="nav-challenge-bg" class="bg-gray-100 p-3 rounded-full -mt-8 shadow-lg border-4 border-white transition-colors">
-                    <i class="fa-solid fa-microphone text-2xl" id="nav-challenge-icon"></i>
-                </div>
-                <span class="text-xs font-bold mt-1" id="nav-challenge-text">도전하기!</span>
-            </button>
-            <button onclick="switchTab('rewards')" id="nav-rewards" class="nav-btn flex flex-col items-center p-2 transition-all text-gray-400">
-                <i class="fa-solid fa-trophy text-2xl mb-1"></i>
-                <span class="text-xs font-bold">내 뱃지</span>
-            </button>
         </div>
 
     </div>
 
-    <script>
-        // 미션 데이터
-        const DAILY_MISSIONS = [
-            { id: 1, emoji: '👋', situation: '친구를 처음 만났을 때', korean: '안녕! 만나서 반가워.', english: 'Hello! Nice to meet you.', keywords: ['hello', 'nice', 'meet', 'you'] },
-            { id: 2, emoji: '🍎', situation: '아침에 일어났을 때', korean: '좋은 아침이에요!', english: 'Good morning!', keywords: ['good', 'morning'] },
-            { id: 3, emoji: '🙏', situation: '도움을 받았을 때', korean: '정말 고마워!', english: 'Thank you so much!', keywords: ['thank', 'you', 'so', 'much'] },
-            { id: 4, emoji: '🛏️', situation: '잠자리에 들 때', korean: '안녕히 주무세요.', english: 'Good night.', keywords: ['good', 'night'] },
-            { id: 5, emoji: '🤔', situation: '기분이 어떤지 물어볼 때', korean: '오늘 기분 어때?', english: 'How are you today?', keywords: ['how', 'are', 'you', 'today'] }
-        ];
+    <div class="title">
 
-        // 앱 상태 저장
-        let state = {
-            currentTab: 'home',
-            missionIndex: 0,
-            stars: 0,
-            streak: 0,
-            isCompletedToday: false,
-            isRecording: false,
-            speechSupported: true
-        };
+        <div class="title-main">
 
-        let recognition = null;
+            🐾 단이의 곱셈 모험 🐾
 
-        // 처음에 실행되는 부분
-        window.onload = () => {
-            initSpeechRecognition();
-            updateUI();
-            renderBadges();
-        };
+        </div>
 
-        // 음성 인식(마이크) 설정
-        function initSpeechRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (SpeechRecognition) {
-                recognition = new SpeechRecognition();
-                recognition.continuous = false;
-                recognition.lang = 'en-US';
-                recognition.interimResults = false;
+        <span class="title-sub">
 
-                recognition.onstart = () => {
-                    state.isRecording = true;
-                    hideElement('feedback-fail');
-                    document.getElementById('transcript-text').innerHTML = '<span class="text-blue-500 animate-pulse text-lg">듣고 있어요... 크게 말해주세요! 🎤</span>';
-                    
-                    const btn = document.getElementById('btn-mic');
-                    btn.className = "w-28 h-28 rounded-full flex items-center justify-center shadow-2xl transition-all relative bg-red-500 scale-110 shadow-red-500/50";
-                    showElement('mic-pulse');
-                };
+            맛있는 간식을 찾아서 출발!
 
-                recognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript;
-                    document.getElementById('transcript-text').innerHTML = `<span class="text-lg font-medium text-gray-700 bg-gray-100 py-2 px-4 rounded-xl">"${transcript}"</span>`;
-                    checkPronunciation(transcript);
-                };
+        </span>
 
-                recognition.onerror = (event) => {
-                    console.error('Speech error', event.error);
-                    state.isRecording = false;
-                    resetMicButton();
-                    if(event.error !== 'no-speech') {
-                        showElement('feedback-fail');
-                        document.getElementById('transcript-text').innerHTML = '<span class="text-sm font-bold text-gray-400">잘 안 들려요. 다시 시도해볼까요?</span>';
-                    }
-                };
+    </div>
 
-                recognition.onend = () => {
-                    state.isRecording = false;
-                    resetMicButton();
-                };
-            } else {
-                state.speechSupported = false;
-                document.getElementById('btn-mic').className = "w-28 h-28 rounded-full flex items-center justify-center shadow-2xl transition-all relative bg-gray-300 cursor-not-allowed";
-                document.getElementById('mic-icon').className = "fa-solid fa-microphone-slash text-4xl text-white";
-                showElement('unsupported-msg');
-                hideElement('btn-manual');
-            }
+    <div class="scene">
+
+        <div class="sun">☀️</div>
+
+        <div class="tree tree1">🌳</div>
+
+        <div class="tree tree2">🌳</div>
+
+        <div class="hill"></div>
+
+        <div class="hill2"></div>
+
+        <div class="flowers">
+
+            🌷 🌼 🌸 🌼
+
+        </div>
+
+        <div class="bubble" id="message">
+
+            이 문제의 정답은 뭘까? 💕
+
+        </div>
+
+        <!-- 단이 -->
+
+        <div class="dani" id="dani">
+
+            🐶
+
+        </div>
+
+    </div>
+
+    <div class="question" id="question">
+
+        3 × 2 = ?
+
+    </div>
+
+    <div class="answers">
+
+        <button class="answer" id="answer0" onclick="checkAnswer(0)">
+
+            5
+
+        </button>
+
+        <button class="answer" id="answer1" onclick="checkAnswer(1)">
+
+            6
+
+        </button>
+
+        <button class="answer" id="answer2" onclick="checkAnswer(2)">
+
+            8
+
+        </button>
+
+    </div>
+
+    <div class="bottom">
+
+        <button class="action" onclick="restartGame()">
+
+            ↩ 처음부터
+
+        </button>
+
+        <div class="progress">
+
+            <div class="progress-bar" id="progressBar"></div>
+
+        </div>
+
+        <button class="action" onclick="showHint()">
+
+            💡 힌트
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- 정답 팝업 -->
+
+<div class="popup" id="popup">
+
+    <div class="popup-card">
+
+        <div class="popup-big">
+
+            🐶💕🍖
+
+        </div>
+
+        <div class="popup-title">
+
+            정답이야!
+
+        </div>
+
+        <div class="popup-text" id="popupText">
+
+            단이가 간식을 받았어요!
+
+        </div>
+
+        <button class="next-button" onclick="nextQuestion()">
+
+            다음 문제
+
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+let answer = 0;
+
+let correctPosition = 0;
+
+let score = 0;
+
+let coins = 100;
+
+let level = 2;
+
+let solved = 0;
+
+const dani = document.getElementById("dani");
+
+const message = document.getElementById("message");
+
+const question = document.getElementById("question");
+
+const scoreText = document.getElementById("score");
+
+const coinsText = document.getElementById("coins");
+
+const levelText = document.getElementById("level");
+
+const progressBar = document.getElementById("progressBar");
+
+const popup = document.getElementById("popup");
+
+const popupText = document.getElementById("popupText");
+
+const buttons = [
+
+    document.getElementById("answer0"),
+
+    document.getElementById("answer1"),
+
+    document.getElementById("answer2")
+
+];
+
+/* 새 문제 */
+
+function nextQuestion() {
+
+    popup.style.display = "none";
+
+    dani.className = "dani";
+
+    message.innerText =
+
+        "이 문제의 정답은 뭘까? 💕";
+
+    buttons.forEach(function(button) {
+
+        button.disabled = false;
+
+        button.className = "answer";
+
+    });
+
+    /* 곱셈 문제 */
+
+    const number1 =
+
+        Math.floor(Math.random() * 3) + 2;
+
+    const number2 =
+
+        Math.floor(Math.random() * 8) + 2;
+
+    answer = number1 * number2;
+
+    question.innerText =
+
+        number1 + " × " + number2 + " = ?";
+
+    /* 정답 위치 */
+
+    correctPosition =
+
+        Math.floor(Math.random() * 3);
+
+    let wrong1 =
+
+        answer +
+
+        Math.floor(Math.random() * 3) + 1;
+
+    let wrong2 =
+
+        answer -
+
+        Math.floor(Math.random() * 3) - 1;
+
+    if (wrong2 <= 0 || wrong2 === wrong1) {
+
+        wrong2 = answer + 5;
+
+    }
+
+    const options = [];
+
+    options[correctPosition] = answer;
+
+    options[(correctPosition + 1) % 3] = wrong1;
+
+    options[(correctPosition + 2) % 3] = wrong2;
+
+    buttons.forEach(function(button, index) {
+
+        button.innerText = options[index];
+
+    });
+
+    updateProgress();
+
+}
+
+/* 정답 확인 */
+
+function checkAnswer(index) {
+
+    buttons.forEach(function(button) {
+
+        button.disabled = true;
+
+    });
+
+    if (index === correctPosition) {
+
+        score += 10;
+
+        coins += 10;
+
+        solved++;
+
+        buttons[index].classList.add("correct");
+
+        dani.className =
+
+            "dani dani-happy";
+
+        message.innerText =
+
+            "정답이야! 🎉 단이가 신났어요!";
+
+        /* 10문제마다 레벨업 */
+
+        if (solved % 10 === 0) {
+
+            level++;
+
+            levelText.innerText = level;
+
         }
 
-        function resetMicButton() {
-            if(!state.speechSupported) return;
-            const btn = document.getElementById('btn-mic');
-            btn.className = "w-28 h-28 rounded-full flex items-center justify-center shadow-2xl transition-all relative bg-gradient-to-br from-green-400 to-green-600 hover:scale-105 shadow-green-500/40";
-            hideElement('mic-pulse');
-        }
+        updateScore();
 
-        function startRecording() {
-            if (recognition && !state.isRecording && state.speechSupported) {
-                try { recognition.start(); } catch (e) { console.error("Already started"); }
-            }
-        }
+        popupText.innerText =
 
-        function manualPass() {
-            const currentMission = DAILY_MISSIONS[state.missionIndex];
-            document.getElementById('transcript-text').innerHTML = `<span class="text-lg font-medium text-gray-700 bg-gray-100 py-2 px-4 rounded-xl">"${currentMission.english}"</span>`;
-            handleSuccess();
-        }
+            "⭐ 별 +10  🍖 간식 +10\n현재 간식 " +
 
-        function checkPronunciation(spokenText) {
-            const currentMission = DAILY_MISSIONS[state.missionIndex];
-            const spokenWords = spokenText.toLowerCase().replace(/[^a-z0-9 ]/g, '').split(' ');
-            
-            let matchCount = 0;
-            currentMission.keywords.forEach(keyword => {
-                if (spokenWords.includes(keyword)) matchCount++;
-            });
+            coins +
 
-            const passThreshold = Math.ceil(currentMission.keywords.length / 2);
+            "개!";
 
-            if (matchCount >= passThreshold || spokenText.toLowerCase().includes(currentMission.english.toLowerCase().replace(/[^a-z0-9 ]/g, ''))) {
-                setTimeout(handleSuccess, 500);
-            } else {
-                showElement('feedback-fail');
-            }
-        }
+        popup.style.display = "flex";
 
-        function handleSuccess() {
-            hideElement('recording-ui');
-            const successView = document.getElementById('feedback-success');
-            successView.classList.remove('hidden');
-            successView.classList.add('flex');
-            
-            if (!state.isCompletedToday) {
-                state.stars += 1;
-                state.streak += 1;
-                state.isCompletedToday = true;
-                updateTopBar();
-                renderBadges();
-            }
-        }
+    } else {
 
-        function playAudio() {
-            if ('speechSynthesis' in window) {
-                const utterance = new SpeechSynthesisUtterance(DAILY_MISSIONS[state.missionIndex].english);
-                utterance.lang = 'en-US';
-                utterance.rate = 0.8;
-                window.speechSynthesis.speak(utterance);
-            }
-        }
+        buttons[index].classList.add("wrong");
 
-        function nextMission() {
-            state.missionIndex = (state.missionIndex + 1) % DAILY_MISSIONS.length;
-            state.isCompletedToday = false;
-            
-            document.getElementById('feedback-success').classList.add('hidden');
-            document.getElementById('feedback-success').classList.remove('flex');
-            showElement('recording-ui');
-            hideElement('feedback-fail');
-            document.getElementById('transcript-text').innerHTML = '<span class="text-sm font-bold text-gray-400">아래 마이크 버튼을 누르고 말하세요</span>';
-            
-            updateUI();
-            switchTab('home');
-        }
+        dani.className =
 
-        function switchTab(tabId) {
-            state.currentTab = tabId;
-            
-            ['home', 'challenge', 'rewards'].forEach(id => {
-                document.getElementById(`view-${id}`).classList.remove('active');
-            });
-            document.getElementById(`view-${tabId}`).classList.add('active');
+            "dani dani-sad";
 
-            const navs = ['home', 'challenge', 'rewards'];
-            const colors = { home: 'text-blue-500', challenge: 'text-green-500', rewards: 'text-yellow-500' };
-            
-            navs.forEach(nav => {
-                const btn = document.getElementById(`nav-${nav}`);
-                if (nav === tabId) {
-                    btn.className = `nav-btn flex flex-col items-center p-2 transition-all scale-110 ${colors[nav]}`;
-                } else {
-                    btn.className = `nav-btn flex flex-col items-center p-2 transition-all text-gray-400`;
-                }
+        message.innerText =
 
-                if(nav === 'challenge') {
-                     if (tabId === 'challenge') {
-                         document.getElementById('nav-challenge-bg').className = "bg-green-100 p-3 rounded-full -mt-8 shadow-lg border-4 border-white transition-colors";
-                         document.getElementById('nav-challenge-icon').className = "fa-solid fa-microphone text-2xl text-green-500";
-                         document.getElementById('nav-challenge-text').className = "text-xs font-bold mt-1 text-green-600";
-                     } else {
-                         document.getElementById('nav-challenge-bg').className = "bg-gray-100 p-3 rounded-full -mt-8 shadow-lg border-4 border-white transition-colors";
-                         document.getElementById('nav-challenge-icon').className = "fa-solid fa-microphone text-2xl text-gray-400";
-                         document.getElementById('nav-challenge-text').className = "text-xs font-bold mt-1 text-gray-400";
-                     }
-                }
-            });
-        }
+            "앗, 아쉬워! 💦\n다시 한번 생각해보자!";
 
-        function updateUI() {
-            const current = DAILY_MISSIONS[state.missionIndex];
-            
-            updateTopBar();
+        setTimeout(function() {
 
-            document.getElementById('ui-day-badge').innerText = `Day ${state.streak + 1}`;
-            document.getElementById('mission-emoji').innerText = current.emoji;
-            document.getElementById('mission-situation').innerText = current.situation;
-            
-            if(state.isCompletedToday) {
-                hideElement('home-status-incomplete');
-                showElement('home-status-complete');
-            } else {
-                showElement('home-status-incomplete');
-                hideElement('home-status-complete');
-            }
+            nextQuestion();
 
-            document.getElementById('challenge-title').innerText = current.situation;
-            document.getElementById('challenge-english').innerText = current.english;
-            document.getElementById('challenge-korean').innerText = current.korean;
-        }
+        }, 1300);
 
-        function updateTopBar() {
-            document.getElementById('ui-stars').innerText = state.stars;
-            document.getElementById('ui-streak').innerText = state.streak;
-            document.getElementById('reward-stars').innerText = state.stars;
-            document.getElementById('reward-streak').innerText = state.streak;
-        }
+    }
 
-        function renderBadges() {
-            const container = document.getElementById('badges-container');
-            const badges = [
-                { icon: '🌱', name: '첫 걸음', bg: 'bg-blue-100', reqStars: 1, reqStreak: 0 },
-                { icon: '🔥', name: '3일 연속', bg: 'bg-red-100', reqStars: 0, reqStreak: 3 },
-                { icon: '⭐', name: '별 5개', bg: 'bg-yellow-100', reqStars: 5, reqStreak: 0 },
-                { icon: '👑', name: '영어 왕', bg: 'bg-purple-100', reqStars: 10, reqStreak: 0 }
-            ];
+}
 
-            let html = '';
-            badges.forEach(badge => {
-                const isUnlocked = state.stars >= badge.reqStars && state.streak >= badge.reqStreak;
-                const opacityClass = isUnlocked ? 'opacity-100' : 'opacity-30 grayscale';
-                
-                html += `
-                    <div class="flex flex-col items-center text-center ${opacityClass} transition-all">
-                        <div class="w-16 h-16 ${badge.bg} rounded-full flex items-center justify-center mb-2 shadow-sm">
-                            <span class="text-3xl">${badge.icon}</span>
-                        </div>
-                        <span class="text-xs font-bold text-gray-600">${badge.name}</span>
-                    </div>
-                `;
-            });
+/* 힌트 */
 
-            html += `
-                <div class="flex flex-col items-center text-center opacity-20">
-                    <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-2 border-2 border-dashed border-gray-400">
-                        <span class="text-xl font-bold text-gray-500">?</span>
-                    </div>
-                    <span class="text-xs font-bold text-gray-500">비밀 배지</span>
-                </div>
-            `;
-            container.innerHTML = html;
-        }
+function showHint() {
 
-        function showElement(id) { document.getElementById(id).classList.remove('hidden'); }
-        function hideElement(id) { document.getElementById(id).classList.add('hidden'); }
-    </script>
+    message.innerText =
+
+        "💡 힌트! " +
+
+        question.innerText.split("=")[0] +
+
+        "의 답을 생각해봐!";
+
+}
+
+/* 점수 */
+
+function updateScore() {
+
+    scoreText.innerText = score;
+
+    coinsText.innerText = coins;
+
+}
+
+/* 진행도 */
+
+function updateProgress() {
+
+    let progress =
+
+        (solved % 10) * 10;
+
+    progressBar.style.width =
+
+        progress + "%";
+
+}
+
+/* 처음부터 */
+
+function restartGame() {
+
+    score = 0;
+
+    coins = 100;
+
+    level = 2;
+
+    solved = 0;
+
+    scoreText.innerText = 0;
+
+    coinsText.innerText = 100;
+
+    levelText.innerText = 2;
+
+    progressBar.style.width = "0%";
+
+    nextQuestion();
+
+}
+
+/* 첫 문제 */
+
+nextQuestion();
+
+</script>
+
 </body>
+
 </html>
