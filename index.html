@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Daily Eng-Buddy</title>
+    <!-- Tailwind CSS (예쁜 디자인을 위해 불러오기) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome (아이콘을 위해 불러오기) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (귀여운 둥근 글꼴) -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Nunito', 'Malgun Gothic', sans-serif;
+            background-color: #f9fafb;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* 화면 전환 애니메이션 */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        .view-section.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounce-in {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-bounce-in {
+            animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+    </style>
+</head>
+<body class="selection:bg-blue-200 text-gray-800">
+
+    <div class="max-w-md mx-auto bg-gray-50 min-h-screen relative shadow-2xl overflow-hidden flex flex-col">
+        
+        <!-- 상단 바 (별점, 연속 학습일 표시) -->
+        <div class="flex justify-between items-center p-6 bg-white/80 backdrop-blur-md sticky top-0 z-40">
+            <h1 class="text-2xl font-black tracking-tight">
+                <span class="text-blue-500">Eng</span>-Buddy <i class="fa-solid fa-dragon text-green-500 text-lg"></i>
+            </h1>
+            <div class="flex gap-3">
+                <div class="flex items-center bg-yellow-100 px-3 py-1.5 rounded-full shadow-sm">
+                    <i class="fa-solid fa-star text-yellow-500 mr-1.5 text-sm"></i>
+                    <span class="font-bold text-yellow-700" id="ui-stars">0</span>
+                </div>
+                <div class="flex items-center bg-orange-100 px-3 py-1.5 rounded-full shadow-sm">
+                    <i class="fa-solid fa-fire text-orange-500 mr-1 text-sm"></i>
+                    <span class="font-bold text-orange-700"><span id="ui-streak">0</span>일</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 홈 화면 -->
+        <div id="view-home" class="view-section active flex-col gap-6 p-6 pb-32">
+            <div class="bg-gradient-to-br from-blue-400 to-blue-600 p-6 rounded-3xl text-white shadow-lg relative overflow-hidden">
+                <div class="relative z-10">
+                    <h2 class="text-2xl font-bold mb-1">안녕, 꼬마 친구! 👋</h2>
+                    <p class="text-blue-100 font-medium mb-4">오늘도 신나게 영어를 말해볼까?</p>
+                    
+                    <div id="home-status-incomplete">
+                        <button onclick="switchTab('challenge')" class="bg-white text-blue-600 font-black py-3 px-6 rounded-full shadow-md hover:scale-105 transition-transform flex items-center">
+                            <i class="fa-solid fa-play mr-2"></i> 오늘의 미션 시작하기
+                        </button>
+                    </div>
+                    <div id="home-status-complete" class="hidden">
+                        <div class="inline-flex items-center bg-white/20 px-4 py-2 rounded-full font-bold">
+                            <i class="fa-solid fa-champagne-glasses text-yellow-300 mr-2"></i> 오늘 미션 완료! 참 잘했어요!
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute right-[-20px] bottom-[-20px] text-[100px] opacity-20 transform rotate-12">🐶</div>
+            </div>
+
+            <div class="bg-white p-6 rounded-3xl shadow-sm border-2 border-gray-100">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-gray-700 text-lg">💡 오늘의 상황</h3>
+                    <span class="text-xs font-bold bg-blue-100 text-blue-600 px-2 py-1 rounded-lg" id="ui-day-badge">Day 1</span>
+                </div>
+                <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl">
+                    <div class="text-4xl" id="mission-emoji">👋</div>
+                    <div>
+                        <p class="font-bold text-gray-800" id="mission-situation">친구를 처음 만났을 때</p>
+                        <p class="text-sm text-gray-500 mt-1">이럴 땐 영어로 어떻게 말할까?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 챌린지 화면 -->
+        <div id="view-challenge" class="view-section flex-col items-center text-center gap-6 p-6 pb-32 min-h-screen">
+            <h2 class="text-xl font-bold text-gray-600 mt-4" id="challenge-title">친구를 처음 만났을 때</h2>
+            
+            <div class="bg-white w-full rounded-3xl p-8 shadow-xl border border-gray-50 relative mt-4">
+                <div class="mb-8">
+                    <p class="text-gray-400 font-bold mb-2 text-sm">이렇게 말해봐요!</p>
+                    <h3 class="text-3xl font-black text-gray-800 mb-4" id="challenge-english">Hello! Nice to meet you.</h3>
+                    <p class="text-lg text-blue-500 font-bold bg-blue-50 py-2 rounded-xl" id="challenge-korean">안녕! 만나서 반가워.</p>
+                </div>
+                <button onclick="playAudio()" class="mx-auto flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-6 rounded-full font-bold transition-colors">
+                    <i class="fa-solid fa-volume-high"></i> 원어민 발음 듣기
+                </button>
+            </div>
+
+            <div class="mt-8 flex flex-col items-center w-full relative">
+                <!-- 성공 화면 (숨겨짐) -->
+                <div id="feedback-success" class="hidden flex-col items-center animate-bounce-in absolute top-0 bg-gray-50 w-full z-10 pb-10">
+                    <div class="w-32 h-32 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-champagne-glasses text-6xl text-green-500"></i>
+                    </div>
+                    <h2 class="text-3xl font-black text-green-500 mb-2">Excellent!</h2>
+                    <p class="text-gray-600 font-bold mb-8">참 잘했어요! 별을 획득했습니다.</p>
+                    <button onclick="nextMission()" class="bg-green-500 text-white font-black text-lg py-4 px-12 rounded-full shadow-lg shadow-green-500/30 hover:bg-green-600 transition-colors">
+                        다음 미션 넘어가기
+                    </button>
+                </div>
+
+                <!-- 기본 녹음 UI -->
+                <div id="recording-ui" class="w-full flex flex-col items-center">
+                    <div id="feedback-fail" class="hidden mb-6 flex items-center text-red-500 bg-red-50 px-4 py-2 rounded-xl animate-pulse">
+                        <i class="fa-solid fa-circle-xmark mr-2"></i>
+                        <span class="font-bold">다시 한번 크게 말해볼까요?</span>
+                    </div>
+
+                    <div class="h-16 mb-4 flex items-center justify-center w-full px-4 text-center">
+                        <p id="transcript-text" class="text-sm font-bold text-gray-400">
+                            아래 마이크 버튼을 누르고 말하세요
+                        </p>
+                    </div>
+
+                    <!-- 마이크 버튼 -->
+                    <button id="btn-mic" onclick="startRecording()" class="w-28 h-28 rounded-full flex items-center justify-center shadow-2xl transition-all relative bg-gradient-to-br from-green-400 to-green-600 hover:scale-105 shadow-green-500/40">
+                        <div id="mic-pulse" class="hidden absolute inset-0 rounded-full border-4 border-red-300 animate-ping"></div>
+                        <i id="mic-icon" class="fa-solid fa-microphone text-4xl text-white"></i>
+                    </button>
+
+                    <!-- 미지원 안내 -->
+                    <div id="unsupported-msg" class="hidden mt-8 text-center bg-orange-50 p-4 rounded-2xl w-full">
+                        <p class="text-orange-600 font-bold text-sm mb-3">마이크를 쓸 수 없는 환경이에요 😢</p>
+                        <button onclick="manualPass()" class="bg-orange-500 text-white font-bold py-2 px-6 rounded-full shadow-md text-sm">
+                            큰 소리로 따라하고 여기 누르기!
+                        </button>
+                    </div>
+
+                    <!-- 수동 통과 버튼 (마이크 오류 대비) -->
+                    <button id="btn-manual" onclick="manualPass()" class="mt-8 text-xs text-gray-400 underline">
+                        앗, 마이크가 작동안하나요? (수동 통과)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 보상 화면 -->
+        <div id="view-rewards" class="view-section flex-col gap-6 p-6 pb-32">
+            <h2 class="text-2xl font-black text-gray-800 text-center mt-2">나의 보상 상자 🎁</h2>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-yellow-50 p-6 rounded-3xl border-2 border-yellow-100 flex flex-col items-center justify-center">
+                    <i class="fa-solid fa-star text-4xl text-yellow-500 mb-2"></i>
+                    <p class="text-sm text-yellow-700 font-bold">모은 별</p>
+                    <p class="text-3xl font-black text-yellow-600"><span id="reward-stars">0</span>개</p>
+                </div>
+                <div class="bg-orange-50 p-6 rounded-3xl border-2 border-orange-100 flex flex-col items-center justify-center">
+                    <div class="text-4xl mb-2">🔥</div>
+                    <p class="text-sm text-orange-700 font-bold">연속 학습</p>
+                    <p class="text-3xl font-black text-orange-600"><span id="reward-streak">0</span>일</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-3xl shadow-sm border-2 border-gray-100 mt-4">
+                <h3 class="font-bold text-gray-700 text-lg mb-4">🎖️ 내 배지 컬렉션</h3>
+                <div class="grid grid-cols-3 gap-4" id="badges-container">
+                    <!-- 배지들은 자바스크립트에서 만들어집니다 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 네비게이션 -->
+        <div class="fixed bottom-0 w-full max-w-md bg-white border-t-2 border-gray-100 flex justify-around p-4 pb-6 rounded-t-3xl shadow-[0_-4px_15px_rgba(0,0,0,0.05)] z-50">
+            <button onclick="switchTab('home')" id="nav-home" class="nav-btn flex flex-col items-center p-2 transition-all text-blue-500 scale-110">
+                <i class="fa-solid fa-house text-2xl mb-1"></i>
+                <span class="text-xs font-bold">홈</span>
+            </button>
+            <button onclick="switchTab('challenge')" id="nav-challenge" class="nav-btn flex flex-col items-center p-2 transition-all text-gray-400">
+                <div id="nav-challenge-bg" class="bg-gray-100 p-3 rounded-full -mt-8 shadow-lg border-4 border-white transition-colors">
+                    <i class="fa-solid fa-microphone text-2xl" id="nav-challenge-icon"></i>
+                </div>
+                <span class="text-xs font-bold mt-1" id="nav-challenge-text">도전하기!</span>
+            </button>
+            <button onclick="switchTab('rewards')" id="nav-rewards" class="nav-btn flex flex-col items-center p-2 transition-all text-gray-400">
+                <i class="fa-solid fa-trophy text-2xl mb-1"></i>
+                <span class="text-xs font-bold">내 뱃지</span>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // 미션 데이터
+        const DAILY_MISSIONS = [
+            { id: 1, emoji: '👋', situation: '친구를 처음 만났을 때', korean: '안녕! 만나서 반가워.', english: 'Hello! Nice to meet you.', keywords: ['hello', 'nice', 'meet', 'you'] },
+            { id: 2, emoji: '🍎', situation: '아침에 일어났을 때', korean: '좋은 아침이에요!', english: 'Good morning!', keywords: ['good', 'morning'] },
+            { id: 3, emoji: '🙏', situation: '도움을 받았을 때', korean: '정말 고마워!', english: 'Thank you so much!', keywords: ['thank', 'you', 'so', 'much'] },
+            { id: 4, emoji: '🛏️', situation: '잠자리에 들 때', korean: '안녕히 주무세요.', english: 'Good night.', keywords: ['good', 'night'] },
+            { id: 5, emoji: '🤔', situation: '기분이 어떤지 물어볼 때', korean: '오늘 기분 어때?', english: 'How are you today?', keywords: ['how', 'are', 'you', 'today'] }
+        ];
+
+        // 앱 상태 저장
+        let state = {
+            currentTab: 'home',
+            missionIndex: 0,
+            stars: 0,
+            streak: 0,
+            isCompletedToday: false,
+            isRecording: false,
+            speechSupported: true
+        };
+
+        let recognition = null;
+
+        // 처음에 실행되는 부분
+        window.onload = () => {
+            initSpeechRecognition();
+            updateUI();
+            renderBadges();
+        };
+
+        // 음성 인식(마이크) 설정
+        function initSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.lang = 'en-US';
+                recognition.interimResults = false;
+
+                recognition.onstart = () => {
+                    state.isRecording = true;
+                    hideElement('feedback-fail');
+                    document.getElementById('transcript-text').innerHTML = '<span class="text-blue-500 animate-pulse text-lg">듣고 있어요... 크게 말해주세요! 🎤</span>';
+                    
+                    const btn = document.getElementById('btn-mic');
+                    btn.className = "w-28 h-28 rounded-full flex items-center justify-center shadow-2xl transition-all relative bg-red-500 scale-110 shadow-red-500/50";
+                    showElement('mic-pulse');
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('transcript-text').innerHTML = `<span class="text-lg font-medium text-gray-700 bg-gray-100 py-2 px-4 rounded-xl">"${transcript}"</span>`;
+                    checkPronunciation(transcript);
+                };
+
+                recognition.onerror = (event) => {
+                    console.error('Speech error', event.error);
+                    state.isRecording = false;
+                    resetMicButton();
+                    if(event.error !== 'no-speech') {
+                        showElement('feedback-fail');
+                        document.getElementById('transcript-text').innerHTML = '<span class="text-sm font-bold text-gray-400">잘 안 들려요. 다시 시도해볼까요?</span>';
+                    }
+                };
+
+                recognition.onend = () => {
+                    state.isRecording = false;
+                    resetMicButton();
+                };
+            } else {
+                state.speechSupported = false;
+                document.getElementById('btn-mic').className = "w-28 h-28 rounded-full flex items-center justify-center shadow-2xl transition-all relative bg-gray-300 cursor-not-allowed";
+                document.getElementById('mic-icon').className = "fa-solid fa-microphone-slash text-4xl text-white";
+                showElement('unsupported-msg');
+                hideElement('btn-manual');
+            }
+        }
+
+        function resetMicButton() {
+            if(!state.speechSupported) return;
+            const btn = document.getElementById('btn-mic');
+            btn.className = "w-28 h-28 rounded-full flex items-center justify-center shadow-2xl transition-all relative bg-gradient-to-br from-green-400 to-green-600 hover:scale-105 shadow-green-500/40";
+            hideElement('mic-pulse');
+        }
+
+        function startRecording() {
+            if (recognition && !state.isRecording && state.speechSupported) {
+                try { recognition.start(); } catch (e) { console.error("Already started"); }
+            }
+        }
+
+        function manualPass() {
+            const currentMission = DAILY_MISSIONS[state.missionIndex];
+            document.getElementById('transcript-text').innerHTML = `<span class="text-lg font-medium text-gray-700 bg-gray-100 py-2 px-4 rounded-xl">"${currentMission.english}"</span>`;
+            handleSuccess();
+        }
+
+        function checkPronunciation(spokenText) {
+            const currentMission = DAILY_MISSIONS[state.missionIndex];
+            const spokenWords = spokenText.toLowerCase().replace(/[^a-z0-9 ]/g, '').split(' ');
+            
+            let matchCount = 0;
+            currentMission.keywords.forEach(keyword => {
+                if (spokenWords.includes(keyword)) matchCount++;
+            });
+
+            const passThreshold = Math.ceil(currentMission.keywords.length / 2);
+
+            if (matchCount >= passThreshold || spokenText.toLowerCase().includes(currentMission.english.toLowerCase().replace(/[^a-z0-9 ]/g, ''))) {
+                setTimeout(handleSuccess, 500);
+            } else {
+                showElement('feedback-fail');
+            }
+        }
+
+        function handleSuccess() {
+            hideElement('recording-ui');
+            const successView = document.getElementById('feedback-success');
+            successView.classList.remove('hidden');
+            successView.classList.add('flex');
+            
+            if (!state.isCompletedToday) {
+                state.stars += 1;
+                state.streak += 1;
+                state.isCompletedToday = true;
+                updateTopBar();
+                renderBadges();
+            }
+        }
+
+        function playAudio() {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(DAILY_MISSIONS[state.missionIndex].english);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function nextMission() {
+            state.missionIndex = (state.missionIndex + 1) % DAILY_MISSIONS.length;
+            state.isCompletedToday = false;
+            
+            document.getElementById('feedback-success').classList.add('hidden');
+            document.getElementById('feedback-success').classList.remove('flex');
+            showElement('recording-ui');
+            hideElement('feedback-fail');
+            document.getElementById('transcript-text').innerHTML = '<span class="text-sm font-bold text-gray-400">아래 마이크 버튼을 누르고 말하세요</span>';
+            
+            updateUI();
+            switchTab('home');
+        }
+
+        function switchTab(tabId) {
+            state.currentTab = tabId;
+            
+            ['home', 'challenge', 'rewards'].forEach(id => {
+                document.getElementById(`view-${id}`).classList.remove('active');
+            });
+            document.getElementById(`view-${tabId}`).classList.add('active');
+
+            const navs = ['home', 'challenge', 'rewards'];
+            const colors = { home: 'text-blue-500', challenge: 'text-green-500', rewards: 'text-yellow-500' };
+            
+            navs.forEach(nav => {
+                const btn = document.getElementById(`nav-${nav}`);
+                if (nav === tabId) {
+                    btn.className = `nav-btn flex flex-col items-center p-2 transition-all scale-110 ${colors[nav]}`;
+                } else {
+                    btn.className = `nav-btn flex flex-col items-center p-2 transition-all text-gray-400`;
+                }
+
+                if(nav === 'challenge') {
+                     if (tabId === 'challenge') {
+                         document.getElementById('nav-challenge-bg').className = "bg-green-100 p-3 rounded-full -mt-8 shadow-lg border-4 border-white transition-colors";
+                         document.getElementById('nav-challenge-icon').className = "fa-solid fa-microphone text-2xl text-green-500";
+                         document.getElementById('nav-challenge-text').className = "text-xs font-bold mt-1 text-green-600";
+                     } else {
+                         document.getElementById('nav-challenge-bg').className = "bg-gray-100 p-3 rounded-full -mt-8 shadow-lg border-4 border-white transition-colors";
+                         document.getElementById('nav-challenge-icon').className = "fa-solid fa-microphone text-2xl text-gray-400";
+                         document.getElementById('nav-challenge-text').className = "text-xs font-bold mt-1 text-gray-400";
+                     }
+                }
+            });
+        }
+
+        function updateUI() {
+            const current = DAILY_MISSIONS[state.missionIndex];
+            
+            updateTopBar();
+
+            document.getElementById('ui-day-badge').innerText = `Day ${state.streak + 1}`;
+            document.getElementById('mission-emoji').innerText = current.emoji;
+            document.getElementById('mission-situation').innerText = current.situation;
+            
+            if(state.isCompletedToday) {
+                hideElement('home-status-incomplete');
+                showElement('home-status-complete');
+            } else {
+                showElement('home-status-incomplete');
+                hideElement('home-status-complete');
+            }
+
+            document.getElementById('challenge-title').innerText = current.situation;
+            document.getElementById('challenge-english').innerText = current.english;
+            document.getElementById('challenge-korean').innerText = current.korean;
+        }
+
+        function updateTopBar() {
+            document.getElementById('ui-stars').innerText = state.stars;
+            document.getElementById('ui-streak').innerText = state.streak;
+            document.getElementById('reward-stars').innerText = state.stars;
+            document.getElementById('reward-streak').innerText = state.streak;
+        }
+
+        function renderBadges() {
+            const container = document.getElementById('badges-container');
+            const badges = [
+                { icon: '🌱', name: '첫 걸음', bg: 'bg-blue-100', reqStars: 1, reqStreak: 0 },
+                { icon: '🔥', name: '3일 연속', bg: 'bg-red-100', reqStars: 0, reqStreak: 3 },
+                { icon: '⭐', name: '별 5개', bg: 'bg-yellow-100', reqStars: 5, reqStreak: 0 },
+                { icon: '👑', name: '영어 왕', bg: 'bg-purple-100', reqStars: 10, reqStreak: 0 }
+            ];
+
+            let html = '';
+            badges.forEach(badge => {
+                const isUnlocked = state.stars >= badge.reqStars && state.streak >= badge.reqStreak;
+                const opacityClass = isUnlocked ? 'opacity-100' : 'opacity-30 grayscale';
+                
+                html += `
+                    <div class="flex flex-col items-center text-center ${opacityClass} transition-all">
+                        <div class="w-16 h-16 ${badge.bg} rounded-full flex items-center justify-center mb-2 shadow-sm">
+                            <span class="text-3xl">${badge.icon}</span>
+                        </div>
+                        <span class="text-xs font-bold text-gray-600">${badge.name}</span>
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="flex flex-col items-center text-center opacity-20">
+                    <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-2 border-2 border-dashed border-gray-400">
+                        <span class="text-xl font-bold text-gray-500">?</span>
+                    </div>
+                    <span class="text-xs font-bold text-gray-500">비밀 배지</span>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        function showElement(id) { document.getElementById(id).classList.remove('hidden'); }
+        function hideElement(id) { document.getElementById(id).classList.add('hidden'); }
+    </script>
+</body>
+</html>
